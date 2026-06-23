@@ -1,11 +1,7 @@
-//
-//  Compile
-//
+##  Compile
 
 g++ *.cpp -o ./target/testqueue.exe
 
-//
-//  Run
-//
+## SRun
 
 ./target/testqueue.exe
