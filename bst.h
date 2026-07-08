@@ -21,4 +21,6 @@ public:
     void print();
 
     int getHeight();
+
+    bool validate();
 };

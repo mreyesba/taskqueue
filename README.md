@@ -2,6 +2,6 @@
 
 g++ *.cpp -o ./target/testqueue.exe
 
-## SRun
+##  Run
 
 ./target/testqueue.exe

@@ -2,7 +2,7 @@
 
 class TaskQueue {
 private:
-    
+
 public:
     TaskQueue() {
 

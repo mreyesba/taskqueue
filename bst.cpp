@@ -3,6 +3,28 @@
 #include "bst.h"
 #include <algorithm>
 
+int compare(Task* first, Task* second)
+{
+    if (first->priority == second->priority &&
+        first->taskId == second->taskId &&
+        first->userId == second->userId)
+    {
+        return 0;
+    }
+
+    if (first->priority > second->priority || 
+        (first->priority == second->priority &&
+         first->taskId > second->taskId) ||
+        (first->priority == second->priority &&
+         first->taskId == second->taskId &&
+         first->userId > second->userId))
+    {
+        return -1;
+    }
+
+    return 1;
+}
+
 void deleteTree(Task* root)
 {
     if (root == nullptr)
@@ -13,11 +35,13 @@ void deleteTree(Task* root)
     if (root->left != nullptr)
     {
         deleteTree(root->left);
+        root->left = nullptr;
     }
 
     if (root->right != nullptr)
     {
         deleteTree(root->right);
+        root->right = nullptr;
     }
 
     delete root;
@@ -53,12 +77,16 @@ Task* rearrangeSubTree(Task* root)
 
     if (cur->left == nullptr)
     {
-        return cur->right;
+        res = cur->right;
+        cur->right = nullptr;
+        return res;
     }
 
     if (cur->right == nullptr)
     {
-        return cur->left;
+        res = cur->left;
+        cur->left = nullptr;
+        return res;
     }
 
     leftmostRight = leftmost(cur->right);
@@ -222,7 +250,7 @@ void BST::remove(int taskId, int userId, int priority) {
             }
             else
             {
-                m_root = parent->left = rearrangeSubTree(cur);;
+                m_root = rearrangeSubTree(cur);
             }
 
             delete cur;
@@ -292,4 +320,61 @@ int getHeightHelper(Task* root)
 
 int BST::getHeight() {
     return getHeightHelper(m_root);
+}
+
+bool validateHelper(Task* root) {
+    if (root == nullptr)
+    {
+        return true;
+    }
+
+    if (root->left != nullptr && 
+        (compare(root->left, root) != -1 ||
+         !validateHelper(root->left)))
+    {
+        return false;
+    }
+
+    if (root->right != nullptr && 
+        (compare(root->right, root) != 1 ||
+         !validateHelper(root->right)))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool validateHelper(Task* node, Task* leftBound, Task* rightBound) {
+
+    if (node == nullptr)
+    {
+        return true;
+    }
+
+    if (leftBound != nullptr && compare(node, leftBound) != -1)
+    {
+        return false;
+    } 
+    
+    if (rightBound != nullptr && compare(node, rightBound) != 1)
+    {
+        return false;
+    }
+
+    if (node->left != nullptr && !validateHelper(node->left, leftBound, node))
+    {
+        return false;
+    }
+
+    if (node->right != nullptr && !validateHelper(node->right, node, rightBound))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool BST::validate() {
+    return validateHelper(m_root, nullptr, nullptr);
 }
