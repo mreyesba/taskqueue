@@ -248,7 +248,7 @@ private:
 
                 cur->data = successor->data;
 
-                cur = removeHelper(successor->data, cur->right);
+                cur->right = removeHelper(successor->data, cur->right);
             }
         }
         else if (cur->data > val)
@@ -371,6 +371,11 @@ public:
 
     void remove(const T& val) {
         m_root = removeHelper(val, m_root);
+    }
+
+    Node<T>* getMin()
+    {
+        return leftmost(m_root);
     }
 
     int getHeight() {
